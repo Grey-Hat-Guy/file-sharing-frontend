@@ -4,16 +4,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterPage = () => {
+    const API_URL = import.meta.env.VITE_APP_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log('Register button clicked');
         try {
-            // console.log('Backend URL:', process.env.REACT_APP_URL);
-            const response = await fetch("http://localhost:5000/api/register", {
+            const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
