@@ -48,7 +48,7 @@ const Dashboard = () => {
             toast.success(response.data.message);
             fetchFiles();
         } catch (error) {
-            toast.error("File upload failed.")
+            toast.error("File upload failed")
         } finally {
             setUploading(false);
         }
