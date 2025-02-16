@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Navigate } from "react-router-dom";
 import { Loader } from './Loader';
+import Cookies from 'js-cookie';
 
 export const ProtectedRoute = ({ children }) => {
     const [isAuth, setIsAuth] = useState(null);
 
     useEffect(() => {
         const checkAuth = () => {
-            const token = document.cookie
-                .split("; ")
-                .find((row) => row.startsWith("token="))
-                ?.split("=")[1];
+            const token = Cookies.get("token");
 
             if (!token) {
                 setIsAuth(false);
