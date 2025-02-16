@@ -9,7 +9,7 @@ export const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         const checkAuth = () => {
             const token = Cookies.get("token");
-
+            console.log(token);
             if (!token) {
                 setIsAuth(false);
             } else {
