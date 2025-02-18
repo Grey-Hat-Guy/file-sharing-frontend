@@ -38,7 +38,7 @@ const DownloadPage = () => {
     return isLoggedIn ? (
         <div>
             <h2>Download Your File</h2>
-            <button onClick={handleDownload}>Download</button>
+            <button onClick={downloadFile}>Download</button>
         </div>
     ) : null;
 };
