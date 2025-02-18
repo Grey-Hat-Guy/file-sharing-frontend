@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
+    const { setIsLoggedIn } = useAuth();
     const API_URL = import.meta.env.VITE_APP_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -23,6 +25,7 @@ const LoginPage = () => {
 
             const data = await response.json();
             if (response.ok) {
+                setIsLoggedIn(true);
                 toast.success('Login successful!');
                 navigate("/dashboard");
             } else {

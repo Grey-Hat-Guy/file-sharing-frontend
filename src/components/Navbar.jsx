@@ -1,14 +1,29 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+    const API_URL = import.meta.env.VITE_APP_URL;
     const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/');
+    const { isLoggedIn, setIsLoggedIn } = useAuth();
+
+    const handleLogout = async () => {
+        try {
+            await fetch(`${API_URL}/api/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            setIsLoggedIn(false);
+            navigate('/');
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
-    const isLoggedIn = !!sessionStorage.getItem('token');
+    if (isLoggedIn === null) {
+        return null;
+    }
 
     return (
         <nav className="bg-blue text-white p-4 shadow-md">

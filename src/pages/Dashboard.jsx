@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard = () => {
@@ -8,6 +10,7 @@ const Dashboard = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [files, setFiles] = useState([]);
+    const [fileLinks, setFileLinks] = useState({});
 
     useEffect(() => {
         fetchFiles();
@@ -53,6 +56,28 @@ const Dashboard = () => {
             setUploading(false);
         }
     }
+
+    const generateLink = async (fileId) => {
+        try {
+            const response = await axios.post(`${API_URL}/api/files/generate-link/${fileId}`, {}, {
+                withCredentials: true
+            });
+
+            toast.success("Link generated!");
+            setFileLinks(prevLinks => ({
+                ...prevLinks,
+                [fileId]: response.data.url
+            }));
+        } catch (error) {
+            toast.error("Failed to generate link!");
+        }
+    };
+
+    const copyToClipboard = (url) => {
+        navigator.clipboard.writeText(url);
+        toast.success("Copied to clipboard!");
+    };
+
     return (
         <div className="container mx-auto p-4">
             <ToastContainer autoClose={2500} />
@@ -74,6 +99,19 @@ const Dashboard = () => {
                                     <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
                                         Generate Link
                                     </button>
+                                    {fileLinks[file._id] && (
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <input
+                                                type="text"
+                                                value={fileLinks[file._id]}
+                                                readOnly
+                                                className="border p-1 w-full"
+                                            />
+                                            <button className="bg-gray-300 p-2 rounded" onClick={() => copyToClipboard(fileLinks[file._id])}>
+                                                <FontAwesomeIcon icon={faCopy} />
+                                            </button>
+                                        </div>
+                                    )}
                                 </li>
                             ))}
                         </ul>
