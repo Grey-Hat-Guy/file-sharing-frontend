@@ -9,16 +9,15 @@ const DownloadPage = () => {
     const navigate = useNavigate();
     const { token } = useParams();
     const API_URL = import.meta.env.VITE_APP_URL;
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (isLoggedIn === false) {
             setTimeout(() => {
                 navigate("/");
             }, 2000);
-        } else if (isLoggedIn === true) {
-            setLoading(false);
         }
+        setLoading(false);
     }, [isLoggedIn, navigate]);
 
     const downloadFile = async () => {
