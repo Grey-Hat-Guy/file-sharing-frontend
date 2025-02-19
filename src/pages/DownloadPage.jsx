@@ -12,7 +12,9 @@ const DownloadPage = () => {
 
     useEffect(() => {
         if (isLoggedIn === false) {
-            navigate("/");
+            setTimeout(() => {
+                navigate("/");
+            }, 2000);
         }
     }, [isLoggedIn, navigate]);
 
@@ -23,10 +25,12 @@ const DownloadPage = () => {
                 withCredentials: true
             });
 
+            const filename = response.headers['content-disposition']?.split('filename=')[1] || 'downloaded-file';
+
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'file');
+            link.setAttribute('download', filename.replace(/"/g, ''));
             document.body.appendChild(link);
             link.click();
             link.remove();
