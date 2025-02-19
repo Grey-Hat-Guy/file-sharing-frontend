@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
@@ -9,12 +9,15 @@ const DownloadPage = () => {
     const navigate = useNavigate();
     const { token } = useParams();
     const API_URL = import.meta.env.VITE_APP_URL;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isLoggedIn === false) {
             setTimeout(() => {
                 navigate("/");
             }, 2000);
+        } else if (isLoggedIn === true) {
+            setLoading(false);
         }
     }, [isLoggedIn, navigate]);
 
@@ -38,6 +41,8 @@ const DownloadPage = () => {
             toast.error("Failed to download file");
         }
     };
+
+    if (loading) return <h2>Checking authentication...</h2>;
 
     return isLoggedIn ? (
         <div>
