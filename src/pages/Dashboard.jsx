@@ -79,43 +79,45 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <ToastContainer autoClose={2500} />
-            <h2 className="text-2xl font-bold text-blue mb-4">Dashboard</h2>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-700">Your Files</h3>
-                <div className='mt-4'>
-                    <input type="file" onChange={handleFileChange} className='mb-2' />
-                    <button onClick={handleUpload} className="bg-blue text-white p-2 rounded hover:bg-mint">
-                        {uploading ? "Uploading..." : "Upload File"}
-                    </button>
+        <div className='bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)] h-[91.7vh]'>
+            <div className="container mx-auto p-4">
+                <ToastContainer autoClose={2500} />
+                <h2 className="text-2xl font-bold text-blue mb-4">Dashboard</h2>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h3 className="text-xl font-semibold text-gray-700">Your Files</h3>
+                    <div className='mt-4'>
+                        <input type="file" onChange={handleFileChange} className='mb-2' />
+                        <button onClick={handleUpload} className="bg-blue text-white p-2 rounded hover:bg-mint">
+                            {uploading ? "Uploading..." : "Upload File"}
+                        </button>
 
-                    <h3 className="mt-6 text-lg font-semibold">Uploaded Files</h3>
-                    {files.length > 0 ? (
-                        <ul>
-                            {files.map((file) => (
-                                <li key={file._id} className="flex justify-between items-center bg-gray-100 p-2 mt-2 rounded">
-                                    <span>{file.filename}</span>
-                                    <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
-                                        Generate Link
-                                    </button>
-                                    {fileLinks[file._id] && (
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <input
-                                                type="text"
-                                                value={fileLinks[file._id]}
-                                                readOnly
-                                                className="border p-1 w-full"
-                                            />
-                                            <button className="bg-gray-300 p-2 rounded" onClick={() => copyToClipboard(fileLinks[file._id])}>
-                                                <FontAwesomeIcon icon={faCopy} />
-                                            </button>
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    ) : <p className='mt-2'>No files</p>}
+                        <h3 className="mt-6 text-lg font-semibold">Uploaded Files</h3>
+                        {files.length > 0 ? (
+                            <ul>
+                                {files.map((file) => (
+                                    <li key={file._id} className="flex justify-between items-center bg-gray-100 p-2 mt-2 rounded">
+                                        <span>{file.filename}</span>
+                                        <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
+                                            Generate Link
+                                        </button>
+                                        {fileLinks[file._id] && (
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <input
+                                                    type="text"
+                                                    value={fileLinks[file._id]}
+                                                    readOnly
+                                                    className="border p-1 w-full"
+                                                />
+                                                <button className="bg-gray-300 p-2 rounded" onClick={() => copyToClipboard(fileLinks[file._id])}>
+                                                    <FontAwesomeIcon icon={faCopy} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : <p className='mt-2'>No files</p>}
+                    </div>
                 </div>
             </div>
         </div>

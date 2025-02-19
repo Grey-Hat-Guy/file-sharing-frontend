@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import login from "../assets/login_bg.avif";
 
 const LoginPage = () => {
     const { setIsLoggedIn } = useAuth();
@@ -37,7 +38,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-screen bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)]">
             <ToastContainer autoClose={2500} />
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h2 className="text-2xl font-bold text-center text-blue mb-6">Login</h2>

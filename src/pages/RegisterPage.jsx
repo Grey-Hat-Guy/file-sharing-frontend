@@ -35,7 +35,7 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-screen bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)]">
             <ToastContainer autoClose={2500} />
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h2 className="text-2xl font-bold text-center text-blue mb-6">Register</h2>
