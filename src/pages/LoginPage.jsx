@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import login from "../assets/login_bg.avif";
 
 const LoginPage = () => {
     const { setIsLoggedIn } = useAuth();
