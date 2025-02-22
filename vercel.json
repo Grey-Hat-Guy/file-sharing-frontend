@@ -7,6 +7,10 @@
         {
             "source": "/dashboard/(.*)",
             "destination": "/index.html"
+        },
+        {
+            "source": "/download/:token",
+            "destination": "/index.html"
         }
     ]
 }
