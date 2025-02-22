@@ -87,6 +87,15 @@ const Dashboard = () => {
                 ...prevLinks,
                 [fileId]: response.data.url
             }));
+
+            setFilePasswords(prev => ({
+                ...prev,
+                [fileId]: ""
+            }));
+            setFileExpiries(prev => ({
+                ...prev,
+                [fileId]: ""
+            }));
         } catch (error) {
             toast.error("Failed to generate link!");
         }
