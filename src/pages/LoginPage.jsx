@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
+import { ClipLoader } from 'react-spinners';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,9 +11,11 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch(`${API_URL}/api/login`, {
                 method: 'POST',
@@ -41,6 +44,8 @@ const LoginPage = () => {
             }
         } catch (error) {
             toast.error('An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,7 +75,13 @@ const LoginPage = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="bg-blue text-white p-2 rounded w-full hover:bg-mint">Login</button>
+                    <button
+                        type="submit"
+                        className="bg-blue text-white p-2 rounded w-full hover:bg-mint transition-all duration-300"
+                        disabled={loading}
+                    >
+                        {loading ? <ClipLoader size="20" color='#fff' /> : "Login"}
+                    </button>
                 </form>
             </div>
         </div>

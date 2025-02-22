@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { MoonLoader, PulseLoader } from 'react-spinners';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,15 +11,18 @@ const Dashboard = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [files, setFiles] = useState([]);
+    const [loadingFiles, setLoadingFiles] = useState(true);
     const [fileLinks, setFileLinks] = useState({});
     const [filePasswords, setFilePasswords] = useState({});
     const [fileExpiries, setFileExpiries] = useState({});
+    const [generatingLink, setGeneratingLink] = useState({});
 
     useEffect(() => {
         fetchFiles();
     }, []);
 
     const fetchFiles = async () => {
+        setLoadingFiles(true);
         try {
             const response = await axios.get(`${API_URL}/api/files/my-files`, {
                 withCredentials: true
@@ -26,6 +30,8 @@ const Dashboard = () => {
             setFiles(response.data);
         } catch (error) {
             toast.error("Failed to fetch files!");
+        } finally {
+            setLoadingFiles(false);
         }
     }
 
@@ -44,7 +50,6 @@ const Dashboard = () => {
 
         try {
             setUploading(true);
-
             const response = await axios.post(`${API_URL}/api/files/upload`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true
@@ -60,20 +65,15 @@ const Dashboard = () => {
     }
 
     const handlePasswordChange = (fileId, value) => {
-        setFilePasswords(prev => ({
-            ...prev,
-            [fileId]: value
-        }));
+        setFilePasswords(prev => ({ ...prev, [fileId]: value }));
     };
 
     const handleExpiryChange = (fileId, value) => {
-        setFileExpiries(prev => ({
-            ...prev,
-            [fileId]: value
-        }));
+        setFileExpiries(prev => ({ ...prev, [fileId]: value }));
     };
 
     const generateLink = async (fileId) => {
+        setGeneratingLink(prev => ({ ...prev, [fileId]: true }));
         try {
             const response = await axios.post(`${API_URL}/api/files/generate-link/${fileId}`, {
                 password: filePasswords[fileId] || "",
@@ -83,21 +83,13 @@ const Dashboard = () => {
             });
 
             toast.success("Link generated!");
-            setFileLinks(prevLinks => ({
-                ...prevLinks,
-                [fileId]: response.data.url
-            }));
-
-            setFilePasswords(prev => ({
-                ...prev,
-                [fileId]: ""
-            }));
-            setFileExpiries(prev => ({
-                ...prev,
-                [fileId]: ""
-            }));
+            setFileLinks(prevLinks => ({ ...prevLinks, [fileId]: response.data.url }));
+            setFilePasswords(prev => ({ ...prev, [fileId]: "" }));
+            setFileExpiries(prev => ({ ...prev, [fileId]: "" }));
         } catch (error) {
             toast.error("Failed to generate link!");
+        } finally {
+            setGeneratingLink(prev => ({ ...prev, [fileId]: false }));
         }
     };
 
@@ -120,7 +112,11 @@ const Dashboard = () => {
                         </button>
 
                         <h3 className="mt-6 text-lg font-semibold">Uploaded Files</h3>
-                        {files.length > 0 ? (
+                        {loadingFiles ? (
+                            <div className="flex justify-center mt-4">
+                                <PulseLoader size="14" color="#1e3a8a" />
+                            </div>
+                        ) : files.length > 0 ? (
                             <ul>
                                 {files.map((file) => (
                                     <li key={file._id} className="flex items-center justify-between bg-gray-100 p-2 mt-2 rounded flex-wrap md:flex-nowrap">
@@ -141,8 +137,12 @@ const Dashboard = () => {
                                                 onChange={(e) => handleExpiryChange(file._id, e.target.value)}
                                                 className="border p-1 w-full md:w-auto rounded-md outline-blue-200"
                                             />
-                                            <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
+                                            <button
+                                                className="bg-green-500 text-white p-2 rounded flex items-center gap-2"
+                                                onClick={() => generateLink(file._id)}
+                                            >
                                                 Generate Link
+                                                {generatingLink[file._id] && <MoonLoader size="20" color="white" />}
                                             </button>
                                         </div>
                                         {fileLinks[file._id] && (
@@ -162,7 +162,6 @@ const Dashboard = () => {
                                 ))}
                             </ul>
                         ) : <p className='mt-2'>No files</p>}
-
                     </div>
                 </div>
             </div>

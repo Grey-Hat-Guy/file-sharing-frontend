@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ClipLoader } from 'react-spinners';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,9 +9,11 @@ const RegisterPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
@@ -31,6 +34,8 @@ const RegisterPage = () => {
         } catch (error) {
             console.error('Fetch Error:', error);
             toast.error('An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -60,7 +65,13 @@ const RegisterPage = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="bg-blue text-white p-2 rounded w-full hover:bg-mint">Register</button>
+                    <button
+                        type="submit"
+                        className="bg-blue text-white p-2 rounded w-full hover:bg-mint transition-all duration-300"
+                        disabled={loading}
+                    >
+                        {loading ? <ClipLoader size="20" color="#fff" /> : "Register"}
+                    </button>
                 </form>
             </div>
         </div>
