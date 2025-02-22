@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import { Loader } from '../components/Loader';
 const DownloadPage = () => {
     const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const { token } = useParams();
     const API_URL = import.meta.env.VITE_APP_URL;
     const [loading, setLoading] = useState(true);
@@ -15,11 +16,12 @@ const DownloadPage = () => {
     useEffect(() => {
         if (isLoggedIn === false) {
             setTimeout(() => {
+                localStorage.setItem('redirectAfterLogin', location.pathname);
                 navigate("/");
             }, 2000);
         }
         setLoading(false);
-    }, [isLoggedIn, navigate]);
+    }, [isLoggedIn, navigate, location.pathname]);
 
     const downloadFile = async () => {
         try {

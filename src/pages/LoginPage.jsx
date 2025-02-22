@@ -27,7 +27,15 @@ const LoginPage = () => {
             if (response.ok) {
                 setIsLoggedIn(true);
                 toast.success('Login successful!');
-                navigate("/dashboard");
+
+                const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+
+                if (redirectAfterLogin) {
+                    navigate(redirectAfterLogin);
+                    localStorage.removeItem('redirectAfterLogin');
+                } else {
+                    navigate("/dashboard");
+                }
             } else {
                 toast.error(data.message || 'Login failed!');
             }
