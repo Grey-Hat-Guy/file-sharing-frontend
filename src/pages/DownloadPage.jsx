@@ -20,10 +20,8 @@ const DownloadPage = () => {
 
     useEffect(() => {
         if (isLoggedIn === false) {
-            setTimeout(() => {
-                localStorage.setItem('redirectAfterLogin', location.pathname);
-                navigate("/");
-            }, 2000);
+            localStorage.setItem('redirectAfterLogin', location.pathname);
+            navigate("/");
         } else {
             checkFileInfo();
         }
@@ -37,7 +35,11 @@ const DownloadPage = () => {
             });
             setPasswordRequired(response.data.passwordProtected);
         } catch (error) {
-            toast.error("File not found or expired");
+            if (error.response && error.response.status === 410) {
+                toast.error("This link has expired");
+            } else {
+                toast.error("File not found or expired");
+            }
             navigate("/");
         } finally {
             setLoading(false);
@@ -47,8 +49,8 @@ const DownloadPage = () => {
     const downloadFile = async () => {
         try {
             setDownloading(true);
-            const response = await axios.get(`${API_URL}/api/files/download/${token}`,
-                passwordRequired ? { password } : {},
+            const response = await axios.post(`${API_URL}/api/files/download/${token}`,
+                { password },
                 {
                     responseType: 'blob',
                     withCredentials: true
