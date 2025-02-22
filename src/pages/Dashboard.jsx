@@ -11,6 +11,8 @@ const Dashboard = () => {
     const [uploading, setUploading] = useState(false);
     const [files, setFiles] = useState([]);
     const [fileLinks, setFileLinks] = useState({});
+    const [filePasswords, setFilePasswords] = useState({});
+    const [fileExpiries, setFileExpiries] = useState({});
 
     useEffect(() => {
         fetchFiles();
@@ -57,9 +59,26 @@ const Dashboard = () => {
         }
     }
 
+    const handlePasswordChange = (fileId, value) => {
+        setFilePasswords(prev => ({
+            ...prev,
+            [fileId]: value
+        }));
+    };
+
+    const handleExpiryChange = (fileId, value) => {
+        setFileExpiries(prev => ({
+            ...prev,
+            [fileId]: value
+        }));
+    };
+
     const generateLink = async (fileId) => {
         try {
-            const response = await axios.post(`${API_URL}/api/files/generate-link/${fileId}`, {}, {
+            const response = await axios.post(`${API_URL}/api/files/generate-link/${fileId}`, {
+                password: filePasswords[fileId] || "",
+                expiry: fileExpiries[fileId] || ""
+            }, {
                 withCredentials: true
             });
 
@@ -79,9 +98,9 @@ const Dashboard = () => {
     };
 
     return (
-        <div className='bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)] h-[91.7vh]'>
+        <div className='bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)] h-dvh'>
             <div className="container mx-auto p-4">
-                <ToastContainer autoClose={2500} />
+                <ToastContainer autoClose={2000} />
                 <h2 className="text-2xl font-bold text-blue mb-4">Dashboard</h2>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-semibold text-gray-700">Your Files</h3>
@@ -95,18 +114,35 @@ const Dashboard = () => {
                         {files.length > 0 ? (
                             <ul>
                                 {files.map((file) => (
-                                    <li key={file._id} className="flex justify-between items-center bg-gray-100 p-2 mt-2 rounded">
-                                        <span>{file.filename}</span>
-                                        <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
-                                            Generate Link
-                                        </button>
+                                    <li key={file._id} className="flex items-center justify-between bg-gray-100 p-2 mt-2 rounded flex-wrap md:flex-nowrap">
+                                        <span className="w-full md:w-auto">{file.filename}</span>
+                                        <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+                                            <input
+                                                type="password"
+                                                placeholder="Enter password (optional)"
+                                                value={filePasswords[file._id] || ""}
+                                                onChange={(e) => handlePasswordChange(file._id, e.target.value)}
+                                                className="border p-1 w-full md:w-auto rounded-md outline-blue-200"
+                                            />
+                                            <input
+                                                type="number"
+                                                placeholder="Expiry time in minutes"
+                                                min={0}
+                                                value={fileExpiries[file._id] || ""}
+                                                onChange={(e) => handleExpiryChange(file._id, e.target.value)}
+                                                className="border p-1 w-full md:w-auto rounded-md outline-blue-200"
+                                            />
+                                            <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={() => generateLink(file._id)}>
+                                                Generate Link
+                                            </button>
+                                        </div>
                                         {fileLinks[file._id] && (
-                                            <div className="flex items-center gap-2 mt-2">
+                                            <div className="flex items-center gap-2 mt-2 w-full md:w-auto">
                                                 <input
                                                     type="text"
                                                     value={fileLinks[file._id]}
                                                     readOnly
-                                                    className="border p-1 w-full"
+                                                    className="border p-1 w-full md:w-auto"
                                                 />
                                                 <button className="bg-gray-300 p-2 rounded" onClick={() => copyToClipboard(fileLinks[file._id])}>
                                                     <FontAwesomeIcon icon={faCopy} />
@@ -117,6 +153,7 @@ const Dashboard = () => {
                                 ))}
                             </ul>
                         ) : <p className='mt-2'>No files</p>}
+
                     </div>
                 </div>
             </div>
