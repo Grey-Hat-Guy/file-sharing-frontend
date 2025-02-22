@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Loader } from '../components/Loader';
 
 const DownloadPage = () => {
     const { isLoggedIn } = useAuth();
@@ -41,14 +42,23 @@ const DownloadPage = () => {
         }
     };
 
-    if (loading) return <h2>Checking authentication...</h2>;
+    if (loading) return <Loader />;
 
     return isLoggedIn ? (
-        <div>
-            <h2>Download Your File</h2>
-            <button onClick={downloadFile}>Download</button>
+        <div className="flex items-center justify-center h-screen bg-[linear-gradient(135deg,#FFDEE9_0%,#B5FFFC_100%)]">
+            <div className="bg-white p-10 rounded-lg shadow-xl text-center">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Download Your File</h2>
+                <button
+                    onClick={downloadFile}
+                    className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+                >
+                    Download
+                </button>
+            </div>
         </div>
-    ) : null;
+    ) : (
+        <Loader />
+    );
 };
 
 export default DownloadPage;
